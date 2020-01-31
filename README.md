@@ -1,6 +1,6 @@
 # item-management-system application
 
-Let's assume that you are small/medium company who employee's want to order somthing from any providers. This system allow you, as an office manager, to gather all whishes from the target audience and make an order without chating, asking, and another boring actions :).
+Let's assume that you are small/medium company whos employee's want to order somthing from any providers. This system allow you, as an office manager, to gather all whishes from the target audience and make an order without chating, asking, and another boring actions :).
 
 ## Summary
 * Getting Started (Prerequisites, Installing)
