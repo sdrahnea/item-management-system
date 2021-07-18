@@ -23,7 +23,15 @@ Clone or download a copy of this project.
 
 This project requires Java 1.8, MySQL and Maven.
 
-### Installing
+Database installation
+
+#### 1.2.1 H2
+No installation is required.
+The `spring.datasource.url` is the one required property which should be set. By default, the 
+username is `sa` with empty password. Two modes: in memory and file storage. See the `application.properties`
+file for more details related configuration.
+
+#### 1.2.2 MySQL 
 
 After MySQL instalation, it is required to create a dabase:
 
@@ -40,6 +48,27 @@ Note: in case that you run the application starting with MySQL 8.0.4, please exe
 ALTER USER '${USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${PASSWORD}';
 -- where ${USER} and ${PASSWORD} should be provided. 
 ```
+
+#### 1.2.3 Postgres
+Install PostgreSQL. it is required to create a database:
+
+Please, run the following commands if it is the case:
+```
+createuser -U postgres -s Progress
+```
+
+Please, run the following command to import a database (if it is the case):
+```
+pg_restore -d DATABASE_NAME <  PATH/BACKUP_FILE_NAME.sql
+```
+
+To create the JAR file please use the following command:
+```
+mvn clean package
+```
+
+### Installing
+
 All this files contains initial data. Just copy and paste the file's content Go to downloaded folder and create the build (you should have something similar like the following):
 ```
 SDR:item-management-system sdrahnea$ mvn clean compile package
