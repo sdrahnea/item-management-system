@@ -1,25 +1,25 @@
-# item-management-system application
+# Item Management System Application
 
 Let's assume that you are small/medium company whos employee's want to order something from any providers. This system allow you, as an office manager, to gather all whishes from the target audience and make an order without chating, asking, and another boring actions :).
 
 ## Summary
-* Getting Started (Prerequisites, Installing)
-* Running the tests
-* Deployment
-* Built With
-* Do you have any issue?
-* Contributing
-* Versioning
-* Authors
-* License
-* Donation
+1. Getting Started (Prerequisites, Installing)
+2. Running the tests
+3. Deployment
+4. Built With
+5. Do you have any issue?
+6. Contributing
+7. Versioning
+8. Authors
+9. License
+10. Donation
 
 
-## Getting Started
+## 1. Getting Started
 
 Clone or download a copy of this project.
 
-### Prerequisites
+### 1.2. Prerequisites
 
 This project requires Java 1.8, MySQL and Maven.
 
@@ -67,7 +67,7 @@ To create the JAR file please use the following command:
 mvn clean package
 ```
 
-### Installing
+### 3. Installing
 
 All this files contains initial data. Just copy and paste the file's content Go to downloaded folder and create the build (you should have something similar like the following):
 ```
@@ -127,11 +127,11 @@ SDR:item-management-system sdrahnea$ mvn clean compile package
 SDR:item-management-system sdrahnea$ 
 ```
 
-## Running the tests
+## 4. Running the tests
 
 This project does not have any kind of tests :).
 
-## Deployment
+## 5. Deployment
 
 Once the build (the jar file) is ready the application can be run. Please, use the following command to run the application:
 ```
@@ -140,7 +140,7 @@ SDR:item-management-system sdrahnea$ java -jar target/item-management-system-0.0
 If was used default configuration then the application should be available at this url: http://localhost:8081/mytemplate/login.xhtml 
 Use the following credentials: username: admin, password: 123.
 
-## Built With
+## 6. Built With
 
 * [Java](https://www.java.com/en/download/) - Java technology allows you to work and play in a secure computing environment. Java allows you to play online games, chat with people around the world, calculate your mortgage interest, and view images in 3D, just to name a few.
 * [PrimeFaces](https://www.primefaces.org/) - PrimeFaces is a popular open source framework for JavaServer Faces featuring over 100 components, touch optimized mobilekit, client side validation, theme engine and more.
@@ -151,26 +151,26 @@ Use the following credentials: username: admin, password: 123.
 * [MySQL](https://www.mysql.com/) - MySQL is the world's most popular open source database. Whether you are a fast growing web property, technology ISV or large enterprise, MySQL can cost-effectively help you deliver high performance, scalable database applications.
 * [Maven](https://maven.apache.org/) - Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of information. 
 
-## Do you have any issue?
+## 7. Do you have any issue?
 
 Please contact via LinkedIn account or drop an email (read [LICENSE.md](LICENSE.md) file).
 
-## Contributing
+## 8. Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Versioning
+## 9. Versioning
 
 We use [SemVer](http://semver.org/) for versioning.
 
-## Authors
+## 10. Authors
 
 * **Sergiu Drahnea** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/sergiu-drahnea)
 
-## License
+## 11. License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Donation
+## 12. Donation
 * [PayPal](https://www.paypal.me/sdrahnea) - any donation is welcomed in case that you was pleased with this work :p
 
