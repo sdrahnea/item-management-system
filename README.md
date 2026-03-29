@@ -1,183 +1,242 @@
-# Item Management System Application
+<div align="center">
 
-Let's assume that you are small/medium company whos employee's want to order something from any providers. This system allow you, as an office manager, to gather all whishes from the target audience and make an order without chating, asking, and another boring actions :).
+# 📦 Item Management System
 
-## Summary
-1. Getting Started (Prerequisites, Installing)
-2. Running the tests
-3. Deployment
-4. Built With
-5. Do you have any issue?
-6. Contributing
-7. Versioning
-8. Authors
-9. License
-10. Donation
+**A self-hosted procurement request platform for small and medium-sized businesses.**  
+Employees submit item requests; office managers consolidate and place orders — no chat threads, no spreadsheet ping-pong.
 
+[![Java](https://img.shields.io/badge/Java-8-007396?logo=java&logoColor=white)](https://www.java.com/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-1.5.7-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![PrimeFaces](https://img.shields.io/badge/PrimeFaces-JoinFaces%202.4.1-0076BE)](https://www.primefaces.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8%2B-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## 1. Getting Started
+</div>
 
-Clone or download a copy of this project.
+---
 
-### 1.2. Prerequisites
+## ✨ Features
 
-This project requires Java 1.8, MySQL and Maven.
+| Feature | Details |
+|---|---|
+| 📊 **Configurable Dashboards** | Build bar, horizontal-bar, and pie charts driven by custom native SQL queries stored in the DB |
+| 🔒 **Secured Access** | Spring Security form login with BCrypt password hashing; role-based via `SecurityRole` |
+| 🗄️ **Multi-DB Support** | Ships with MySQL (default) and PostgreSQL drivers; switch by editing `application.properties` |
+| 📤 **Data Export** | One-click export of any table to **XLS, CSV, XML** (Apache POI + iText) |
+| 🌐 **REST API** | Every entity exposes full CRUD REST endpoints alongside the JSF UI |
+| 🎨 **Themeable UI** | 30+ PrimeFaces themes selectable via a single property |
 
-Database installation
+---
 
-#### 1.2.1 H2
-No installation is required.
-The `spring.datasource.url` is the one required property which should be set. By default, the 
-username is `sa` with empty password. Two modes: in memory and file storage. See the `application.properties`
-file for more details related configuration.
-
-#### 1.2.2 MySQL 
-
-After MySQL instalation, it is required to create a dabase:
+## 🏗️ Architecture
 
 ```
-CREATE DATABSE ims;
-```
-Execute the content of `.sql` files, such as: 
-```
-chart_type.sql
-data.sql
-```
-Note: in case that you run the application starting with MySQL 8.0.4, please execute the following query:
-```
-ALTER USER '${USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${PASSWORD}';
--- where ${USER} and ${PASSWORD} should be provided. 
-```
-
-#### 1.2.3 Postgres
-Install PostgreSQL. it is required to create a database:
-
-Please, run the following commands if it is the case:
-```
-createuser -U postgres -s Progress
-```
-
-Please, run the following command to import a database (if it is the case):
-```
-pg_restore -d DATABASE_NAME <  PATH/BACKUP_FILE_NAME.sql
+┌─────────────────────────────────────────────────────┐
+│                  Browser / REST Client               │
+└────────────────────┬────────────────────────────────┘
+                     │  JSF (PrimeFaces)  +  HTTP REST
+┌────────────────────▼────────────────────────────────┐
+│              Controllers  (Spring Beans)             │
+│  AbstractController<T>  ─  JSF actions + REST CRUD  │
+│  DashboardViewController  ─  chart model builder    │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│               Services  (AbstractService<T>)         │
+│        Generic JPA CRUD; autowired by entity type    │
+└────────────────────┬────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────┐
+│          Repositories  (CrudRepository<T, Long>)     │
+└────────────────────┬────────────────────────────────┘
+                     │
+              ┌──────▼──────┐
+              │  MySQL / PG  │
+              └─────────────┘
 ```
 
-To create the JAR file please use the following command:
+> Each feature module (`Dashboard`, `ChartType`, `Constant`) follows the same three-layer pattern — adding a new entity means one model, one service, one controller, and two XHTML views.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+| Tool | Version |
+|---|---|
+| Java JDK | 1.8+ |
+| Maven | 3.5+ |
+| MySQL | 5.7+ / 8.0+ |
+
+### 1. Clone
+
+```bash
+git clone https://github.com/sdrahnea/item-management-system.git
+cd item-management-system
 ```
+
+### 2. Set Up the Database
+
+```sql
+CREATE DATABASE ims;
+```
+
+Run the bootstrap scripts in order:
+
+```bash
+# Seeds chart types (bar, horizontal-bar, pie)
+mysql -u root -p ims < src/main/resources/chart_type.sql
+
+# Seeds boolean constants and the default admin user
+mysql -u root -p ims < src/main/resources/data.sql
+```
+
+> **MySQL 8.0.4+** — if you hit an authentication error, run:
+> ```sql
+> ALTER USER 'your_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password';
+> ```
+
+### 3. Configure
+
+Edit `src/main/resources/application.properties`:
+
+| Property | Default | Description |
+|---|---|---|
+| `server.port` | `8081` | HTTP port |
+| `server.context-path` | `/ims` | Application root path |
+| `spring.datasource.url` | `jdbc:mysql://localhost:3306/ims` | JDBC URL |
+| `spring.datasource.username` | `root` | DB username |
+| `spring.datasource.password` | `root` | DB password |
+| `jsf.primefaces.theme` | `redmond` | UI theme (any PrimeFaces theme name) |
+
+**PostgreSQL** is also supported — comment out the MySQL block and uncomment the PostgreSQL block in `application.properties`.
+
+### 4. Build & Run
+
+```bash
 mvn clean package
+java -jar target/item-management-system-0.0.1-SNAPSHOT.jar
 ```
 
-### 3. Installing
+Open [http://localhost:8081/ims/login.xhtml](http://localhost:8081/ims/login.xhtml)
 
-All this files contains initial data. Just copy and paste the file's content Go to downloaded folder and create the build (you should have something similar like the following):
-```
-SDR:item-management-system sdrahnea$ mvn clean compile package
-[INFO] Scanning for projects...
-[INFO] 
-[INFO] ---------< com.ims:item-management-system >----------
-[INFO] Building item-management-system 0.0.1-SNAPSHOT
-[INFO] --------------------------------[ jar ]---------------------------------
-[INFO] 
-[INFO] --- maven-clean-plugin:2.6.1:clean (default-clean) @ item-management-system ---
-[INFO] Deleting /Users/sdrahnea/Documents/my-projects/item-management-system/target
-[INFO] 
-[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce-versions) @ item-management-system ---
-[INFO] 
-[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ item-management-system ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Copying 1 resource
-[INFO] Copying 13 resources
-[INFO] 
-[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ item-management-system ---
-[INFO] Changes detected - recompiling the module!
-[INFO] Compiling 31 source files to /Users/sdrahnea/Documents/my-projects/item-management-system/target/classes
-[INFO] /Users/sdrahnea/Documents/my-projects/item-management-system/src/main/java/com/udc/controller/AbstractController.java: Some input files use unchecked or unsafe operations.
-[INFO] /Users/sdrahnea/Documents/my-projects/item-management-system/src/main/java/com/udc/controller/AbstractController.java: Recompile with -Xlint:unchecked for details.
-[INFO] 
-[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce-versions) @ item-management-system ---
-[INFO] 
-[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ item-management-system ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Copying 1 resource
-[INFO] Copying 13 resources
-[INFO] 
-[INFO] --- maven-compiler-plugin:3.7.0:compile (default-compile) @ item-management-system ---
-[INFO] Nothing to compile - all classes are up to date
-[INFO] 
-[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ item-management-system ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] skip non existing resourceDirectory /Users/sdrahnea/Documents/my-projects/item-management-system/src/test/resources
-[INFO] 
-[INFO] --- maven-compiler-plugin:3.7.0:testCompile (default-testCompile) @ item-management-system ---
-[INFO] Nothing to compile - all classes are up to date
-[INFO] 
-[INFO] --- maven-surefire-plugin:2.18.1:test (default-test) @ item-management-system ---
-[INFO] No tests to run.
-[INFO] 
-[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ item-management-system ---
-[INFO] Building jar: /Users/sdrahnea/Documents/my-projects/item-management-system/target/item-management-system-0.0.1-SNAPSHOT.jar
-[INFO] 
-[INFO] --- spring-boot-maven-plugin:1.5.7.RELEASE:repackage (default) @ item-management-system ---
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  5.930 s
-[INFO] Finished at: 2019-04-30T20:22:57+03:00
-[INFO] ------------------------------------------------------------------------
-SDR:item-management-system sdrahnea$ 
+**Default credentials:** `admin` / `123`
+
+---
+
+## 🌐 REST API
+
+Every entity controller inherits full CRUD REST endpoints from `AbstractController<T>`.  
+Base URL: `http://localhost:8081/ims`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/dashboard` | List all dashboards |
+| `GET` | `/dashboard/{id}` | Get dashboard by ID |
+| `POST` | `/dashboard` | Create a dashboard |
+| `PUT` | `/dashboard` | Update a dashboard |
+| `DELETE` | `/dashboard/{id}` | Delete a dashboard |
+
+The same pattern applies to `/chart-type` and `/constant`.
+
+### Example — Create a Dashboard
+
+**Request**
+```http
+POST /ims/dashboard
+Content-Type: application/json
+
+{
+  "name": "Monthly Orders",
+  "query": "SELECT month, total FROM order_summary ORDER BY month",
+  "showColumn": "1",
+  "seriesTags": "Total Orders",
+  "legendPosition": "ne",
+  "ymin": 0,
+  "ymax": 0,
+  "chartType": { "id": 1 },
+  "show":     { "id": 1 },
+  "animate":  { "id": 1 }
+}
 ```
 
-## 4. Running the tests
-
-This project does not have any kind of tests :).
-
-## 5. Deployment
-
-Once the build (the jar file) is ready the application can be run. Please, use the following command to run the application:
+**Response** `200 OK`
+```json
+{
+  "id": 7,
+  "name": "Monthly Orders",
+  "query": "SELECT month, total FROM order_summary ORDER BY month",
+  "showColumn": "1",
+  "seriesTags": "Total Orders",
+  "legendPosition": "ne",
+  "ymin": 0,
+  "ymax": 0,
+  "chartType": { "id": 1, "name": "BarChartModel", "uiType": "bar" },
+  "show":      { "id": 1, "name": "true" },
+  "animate":   { "id": 1, "name": "true" },
+  "createdDate": "2026-03-29T10:00:00.000+0000"
+}
 ```
-SDR:item-management-system sdrahnea$ java -jar target/item-management-system-0.0.1-SNAPSHOT.jar
-```
-If was used default configuration then the application should be available at this url: http://localhost:8081/mytemplate/login.xhtml 
-Use the following credentials: username: admin, password: 123.
 
-## 6. Built With
+> `chartType.id`, `show.id`, and `animate.id` must reference existing rows seeded by `chart_type.sql` and `data.sql`.
 
-* [Java](https://www.java.com/en/download/) - Java technology allows you to work and play in a secure computing environment. Java allows you to play online games, chat with people around the world, calculate your mortgage interest, and view images in 3D, just to name a few.
-* [PrimeFaces](https://www.primefaces.org/) - PrimeFaces is a popular open source framework for JavaServer Faces featuring over 100 components, touch optimized mobilekit, client side validation, theme engine and more.
-* [Spring Security](https://spring.io/projects/spring-security) - Spring Security is a powerful and highly customizable authentication and access-control framework. It is the de-facto standard for securing Spring-based applications.
-* [Spring Boot](https://spring.io/projects/spring-boot) - Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run".
-* [Spring Data](https://spring.io/projects/spring-data) - Spring Data’s mission is to provide a familiar and consistent, Spring-based programming model for data access while still retaining the special traits of the underlying data store.
-* [Spring Data JPA](https://spring.io/projects/spring-data-jpa) - Spring Data JPA, part of the larger Spring Data family, makes it easy to easily implement JPA based repositories. This module deals with enhanced support for JPA based data access layers. It makes it easier to build Spring-powered applications that use data access technologies.
-* [MySQL](https://www.mysql.com/) - MySQL is the world's most popular open source database. Whether you are a fast growing web property, technology ISV or large enterprise, MySQL can cost-effectively help you deliver high performance, scalable database applications.
-* [Maven](https://maven.apache.org/) - Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of information. 
+---
 
-## 7. Do you have any issue?
+## 🗃️ Database Support
 
-Please contact via LinkedIn account or drop an email (read [LICENSE.md](LICENSE.md) file).
+| Database | Status | Notes |
+|---|---|---|
+| MySQL 5.7+ | ✅ Default | Requires `mysql_native_password` on MySQL 8.0.4+ |
+| PostgreSQL | ✅ Supported | Uncomment PG block in `application.properties` |
+| H2 | ⚠️ Partial | In-memory mode works; not validated for production use |
 
-## 8. Contributing
+---
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+## 🧰 Built With
 
-## 9. Versioning
+| Library | Purpose |
+|---|---|
+| [Spring Boot 1.5.7](https://spring.io/projects/spring-boot) | Application framework & embedded Tomcat |
+| [JoinFaces 2.4.1](https://github.com/joinfaces/joinfaces) | JSF + PrimeFaces integration for Spring Boot |
+| [PrimeFaces](https://www.primefaces.org/) | UI component library (charts, tables, layout) |
+| [Spring Security](https://spring.io/projects/spring-security) | Authentication & authorization |
+| [Spring Data JPA](https://spring.io/projects/spring-data-jpa) | Repository-pattern data access |
+| [Apache POI 3.17](https://poi.apache.org/) | XLS / XLSX data export |
+| [iText 2.1.7](https://itextpdf.com/) | PDF data export |
+| [Lombok](https://projectlombok.org/) | Boilerplate reduction (`@Data`, `@Builder`, etc.) |
+| [MySQL Connector](https://dev.mysql.com/downloads/connector/j/) | JDBC driver |
 
-We use [SemVer](http://semver.org/) for versioning.
+---
 
-## 10. Authors
+## 🤝 Contributing
 
-* **Sergiu Drahnea** - *Initial work* - [LinkedIn](https://www.linkedin.com/in/sergiu-drahnea)
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the code of conduct and pull-request process.  
+We follow [SemVer](http://semver.org/) for versioning.
 
-## 11. License
+---
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+## 👤 Authors
 
-## 12. Donation
-* [PayPal](https://www.paypal.me/sdrahnea) - any donation is welcomed in case that you was pleased with this work :p
-* [EGLD](http://elrond.com/) - Address: `erd1t3t5m8v7862asdh48nq820shsmlmuw9jpm87qw25cvch7djpkapskgq4es`
-* [TROY](https://troytrade.com/) - Address: `bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23` and Memo: `100079140`
-* [PHB](https://phoenix.global/) - Address: `bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23` and Memo: `100079140`
-* [HOT](https://holochain.org/) - Address: `0x1ebfc62e2510f0a0558568223d1d101d0cf074b2`
-* [VET](https://www.vechain.org/) - Address: `0x1ebfc62e2510f0a0558568223d1d101d0cf074b2`
-* [TRX](https://tron.network/) - Address: `TRe8xSkGqpS73Nhk6bnvW34aiJoRTmZs8N`
-* [BTT](https://www.bittorrent.com/token/btt/) - Address: `TRe8xSkGqpS73Nhk6bnvW34aiJoRTmZs8N`
+**Sergiu Drahnea** — [LinkedIn](https://www.linkedin.com/in/sergiu-drahnea)
 
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see [LICENSE.md](LICENSE.md) for details.
+
+---
+
+## ☕ Support the Project
+
+If this project saved you time, consider a small donation:
+
+| Method | Address |
+|---|---|
+| [PayPal](https://www.paypal.me/sdrahnea) | paypal.me/sdrahnea |
+| EGLD | `erd1t3t5m8v7862asdh48nq820shsmlmuw9jpm87qw25cvch7djpkapskgq4es` |
+| TRX / BTT | `TRe8xSkGqpS73Nhk6bnvW34aiJoRTmZs8N` |
+| HOT / VET | `0x1ebfc62e2510f0a0558568223d1d101d0cf074b2` |
+| TROY / PHB | `bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23` (Memo: `100079140`) |
